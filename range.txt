@@ -1,0 +1,7 @@
+| Biomarker                | Normal (Green) | Elevated (Yellow) | High (Red)                  |
+| ------------------------ | -------------- | ----------------- | --------------------------- |
+| Glucose                  | <100 mg/dL     | 100–126 mg/dL     | >126 mg/dL 1000138920.jpeg​ |
+| Hb                       | >13 g/dL       | 13–12 g/dL        | <12 g/dL 1000138920.jpeg​   |
+| BP Surrogate (NT-proBNP) | <120 pg/mL     | 120–140 pg/mL     | >140 pg/mL 1000138920.jpeg​ |
+| Lp(a)                    | <30 mg/dL      | 30–50 mg/dL       | >50 mg/dL 1000138920.jpeg​  |
+| Troponin I               | <0.04 ng/mL    | 0.04–0.1 ng/mL    | >0.1 ng/mL 1000138920.jpeg​ |
