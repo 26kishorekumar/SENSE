@@ -1,7 +1,18 @@
+# CORE WEB FRAMEWORK
 streamlit
-opencv-python-headless
+
+# DATA SCIENCE & VISUALIZATION
 numpy
 pandas
 plotly
-gTTS
 matplotlib
+
+# COMPUTER VISION
+opencv-python-headless
+
+# AUDIO & PDF GENERATION
+gTTS
+fpdf
+
+# SYSTEM UTILITIES
+sqlite3
