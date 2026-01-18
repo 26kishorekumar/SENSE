@@ -13,6 +13,3 @@ opencv-python-headless
 # AUDIO & PDF GENERATION
 gTTS
 fpdf
-
-# SYSTEM UTILITIES
-sqlite3
