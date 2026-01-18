@@ -16,7 +16,7 @@ import math
 import time
 
 def login_page():
-    # --- ENHANCED FUTURISTIC CSS ---
+  
     st.markdown("""
         <style>
         /* Background Glow Effect */
@@ -75,28 +75,25 @@ def login_page():
         </style>
     """, unsafe_allow_html=True)
 
-    # Vertical Centering Spacer
     st.write("##")
     st.write("##")
 
     col1, col2, col3 = st.columns([0.8, 1.5, 0.8])
     with col2:
         st.markdown('<div class="login-box">', unsafe_allow_html=True)
-        
-        # Hospital/Medical Tech Icon
+ 
         st.image("https://cdn-icons-png.flaticon.com/512/3858/3858733.png", width=80)
         
         st.title("SENSE AI")
         st.markdown("<p style='color: #888; font-size: 0.9rem; margin-top:-10px;'>Secure Clinical Intelligence Portal</p>", unsafe_allow_html=True)
         st.write("---")
         
-        # User Inputs
         user = st.text_input("Institutional ID", placeholder="Enter username")
         pw = st.text_input("Access Key", type="password", placeholder="••••••••")
         
-        st.write("##") # Spacer
+        st.write("##") 
         
-        # Keep your original logic exactly as is
+
         if st.button("INITIALIZE AUTHENTICATION", use_container_width=True):
             c.execute("SELECT * FROM users WHERE username=? AND password=?", (user, pw))
             result = c.fetchone()
@@ -104,7 +101,7 @@ def login_page():
                 st.session_state['logged_in'] = True
                 st.session_state['user_role'] = result[2]
                 st.session_state['username'] = user
-                st.toast("Identity Verified. Welcome, Doctor.") # Modern subtle notification
+                st.toast("Identity Verified. Welcome, Doctor.") 
                 st.success("Access Granted")
                 st.rerun()
             else:
@@ -113,10 +110,9 @@ def login_page():
         st.markdown("<p style='font-size: 0.7rem; color: #555; margin-top: 20px;'>Authorized Personnel Only. System access is logged.</p>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 1. CONFIGURATION & THEME ---
+# --- CONFIGURATION & THEME ---
 st.set_page_config(
     page_title="SENSE AI | Clinical Intelligence System",
-    # Option 1: DNA (🧬) for Precision, Option 2: Heart Pulse (🩺) for Care
     page_icon="🧬", 
     layout="wide",
     initial_sidebar_state="expanded",
@@ -128,7 +124,7 @@ st.set_page_config(
 )
 
 # --- GLOBAL STYLING ENHANCEMENTS ---
-# This makes the "SENSE Purple" brand consistent across the whole app
+
 st.markdown("""
     <style>
     /* Main App Background */
@@ -374,7 +370,7 @@ def create_pdf_report(data, nutrition, activity, supplements):
     pdf.cell(0, 5, f"PATIENT: {safe_name} | ID: {data['pid']} | DATE: {data['timestamp']}", ln=True)
     pdf.ln(20)
 
-    # --- TABLE (Ensuring No Emojis in Columns) ---
+    # --- TABLE---
     pdf.set_text_color(0, 0, 0)
     pdf.set_font("Helvetica", 'B', 12)
     pdf.cell(0, 10, "I. DIAGNOSTIC RESULTS", ln=True)
@@ -403,28 +399,21 @@ def create_pdf_report(data, nutrition, activity, supplements):
         pdf.cell(w[3], 10, status_text, 1, 1, 'C')
         pdf.set_text_color(0, 0, 0)
 
-    # --- CARE STRATEGY (Sanitized Multi-Cell) ---
+    # --- CARE STRATEGY---
     pdf.ln(10)
     sections = [("NUTRITION", nutrition), ("ACTIVITY", activity), ("SUPPLEMENTS", supplements)]
     for title, content in sections:
         pdf.set_font("Helvetica", 'B', 12)
         pdf.cell(0, 8, title, ln=True)
         pdf.set_font("Helvetica", '', 10)
-        # Use clean_medical_text specifically here to prevent 'damaged file'
         pdf.multi_cell(0, 6, clean_medical_text(content), border='L')
         pdf.ln(4)
-
-    # --- THE CRITICAL FIX: OUTPUT TO BYTES ---
-    # We use output() with dest='S' and force latin-1 encoding to get raw binary bytes
-    # This prevents the "Not a supported file type" error in Adobe
     return pdf.output(dest='S').encode('latin-1')
 
 def add_logo():
-    """Adds logo with a cinematic glow, pulsing animation, and glass-morphic pedestal."""
     if os.path.exists("LOGO.JPG"):
         st.sidebar.markdown("""
             <style>
-            /* 1. The Pedestal Container */
             .logo-wrapper {
                 background: rgba(255, 255, 255, 0.03);
                 border: 1px solid rgba(112, 0, 255, 0.2);
@@ -440,14 +429,12 @@ def add_logo():
                 overflow: hidden;
             }
 
-            /* 2. The Breathing Glow Animation */
             @keyframes logo-pulse {
                 0% { filter: drop-shadow(0 0 5px rgba(112, 0, 255, 0.2)); }
                 50% { filter: drop-shadow(0 0 20px rgba(0, 209, 255, 0.6)); }
                 100% { filter: drop-shadow(0 0 5px rgba(112, 0, 255, 0.2)); }
             }
 
-            /* 3. The Scanning Light Effect */
             .logo-wrapper::after {
                 content: "";
                 position: absolute;
@@ -483,29 +470,21 @@ def add_logo():
             </style>
         """, unsafe_allow_html=True)
         
-        # Wrapping in a div to apply the glassmorphic pedestal
         st.sidebar.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
         st.sidebar.image("LOGO.JPG", use_container_width=True)
         st.sidebar.markdown('</div>', unsafe_allow_html=True)
 import io
 
 def speak(text):
-    """
-    Advanced In-Memory Voice Engine.
-    Uses RAM-buffered synthesis to eliminate disk I/O latency.
-    """
+
     try:
-        # 1. Synthesize to RAM instead of Disk
         mp3_fp = io.BytesIO()
         tts = gTTS(text=text, lang='en', slow=False)
         tts.write_to_fp(mp3_fp)
         
-        # 2. Encode to Base64
         mp3_fp.seek(0)
         b64 = base64.b64encode(mp3_fp.read()).decode()
         
-        # 3. Inject Audio with Clinical UI Logic
-        # Added a hidden 'audio-ended' listener to clean up the DOM if needed
         audio_html = f"""
             <audio autoplay="true" style="display:none;">
                 <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
@@ -517,7 +496,6 @@ def speak(text):
         st.markdown(audio_html, unsafe_allow_html=True)
         
     except Exception as e:
-        # Silent fail for production stability
         st.sidebar.error(f"Voice Engine Offline: {e}")
         
 import sqlite3
@@ -528,9 +506,8 @@ def init_db():
     Initializes a resilient relational schema.
     Enhancements: Added timeout and isolation levels for concurrent clinical access.
     """
-    # ENHANCEMENT: Added timeout to prevent 'database is locked' errors during heavy use
     db_conn = sqlite3.connect('sense_health.db', check_same_thread=False, timeout=10)
-    db_conn.row_factory = sqlite3.Row # Allows accessing columns by name like data['name']
+    db_conn.row_factory = sqlite3.Row
     db_cursor = db_conn.cursor()
 
     # --- 1. USER AUTHENTICATION TABLE ---
@@ -559,7 +536,7 @@ def init_db():
         )
     ''')
 
-    # --- AUTO-MIGRATION LOGIC (NO LOGIC CHANGES) ---
+    # --- AUTO-MIGRATION LOGIC---
     db_cursor.execute("PRAGMA table_info(patients)")
     columns = [column[1] for column in db_cursor.fetchall()]
     if 'phone' not in columns:
@@ -598,17 +575,15 @@ def init_db():
     db_conn.commit()
     return db_conn, db_cursor
 
-# Establish System Connection
 conn, c = init_db()
 
-# --- ENHANCED LOGIN SYSTEM LOGIC ---
+# --- LOGIN SYSTEM LOGIC ---
 
 def login_page():
     """
     Renders a high-fidelity, secure clinical login interface.
     Enhancements: Glassmorphism, Form-submission support, and identity-branding.
     """
-    # 1. Advanced Cyber-Clinical CSS
     st.markdown("""
         <style>
         /* Centered Background Glow */
@@ -652,8 +627,7 @@ def login_page():
         </style>
     """, unsafe_allow_html=True)
 
-    # UI Layout
-    st.write("##") # Vertical spacing
+    st.write("##")
     col1, col2, col3 = st.columns([0.8, 1.4, 0.8])
     
     with col2:
@@ -663,7 +637,6 @@ def login_page():
         st.caption("SECURE CLINICAL AUTHENTICATION PROTOCOL")
         st.markdown("---")
         
-        # ENHANCEMENT: Using st.form allows the user to press 'ENTER' to login
         with st.form("auth_form", clear_on_submit=False):
             u_name = st.text_input("Institutional Username", placeholder="e.g. dr_smith")
             u_pass = st.text_input("Security Access Key", type="password", placeholder="••••••••")
@@ -672,7 +645,6 @@ def login_page():
             submit = st.form_submit_button("🚀 INITIALIZE SYSTEM ACCESS", use_container_width=True)
             
             if submit:
-                # Same logical execution as your original
                 c.execute("SELECT * FROM users WHERE username=? AND password=?", (u_name, u_pass))
                 user_record = c.fetchone()
                 
@@ -699,7 +671,6 @@ if not st.session_state['logged_in']:
     st.stop()
 
 # --- LOGGED IN UI ---
-# Displaying a professional status badge in the sidebar
 st.sidebar.markdown(f"""
     <div style="padding:10px; border-radius:10px; background:rgba(0, 255, 128, 0.1); border:1px solid #00ff80;">
         <span style="color:#00ff80;">● SYSTEM ONLINE</span><br>
@@ -712,7 +683,7 @@ if st.sidebar.button("🚪 TERMINATE SESSION", use_container_width=True):
     st.session_state['logged_in'] = False
     st.rerun()
     
-# --- 3. ANALYTICS & BIOMARKER INTELLIGENCE ENGINE ---
+# --- ANALYTICS & BIOMARKER INTELLIGENCE ENGINE ---
 
 # Clinical Reference Ranges (Architectural Constants - Do Not Modify)
 THRESHOLDS = {
@@ -734,43 +705,24 @@ def color_to_value(hsv_mean: list, biomarker: str) -> float:
     - Floating-point precision rounding.
     """
     try:
-        # 1. Extraction: Isolate Saturation (S) for intensity mapping
-        # Safety: Clip to ensure value is strictly between 0 and 1
         saturation_intensity = np.clip(hsv_mean[1] / 255.0, 0, 1)
         
         t = THRESHOLDS[biomarker]
-        
-        # 2. Linear Transformation Logic (Untouched)
+
         if biomarker == 'hb':
-            # Inverse relationship: Higher intensity (saturation) = Lower Hemoglobin
             result = t['normal'] - (saturation_intensity * (t['normal'] - t['high']))
         else:
-            # Direct relationship: Higher intensity = Higher concentration
             result = t['normal'] + (saturation_intensity * (t['high'] - t['normal']))
             
-        # 3. Clinical Precision: Round to 3 decimal places for laboratory accuracy
         return round(float(result), 3)
         
     except KeyError:
-        # Fallback if an unknown biomarker key is passed
         return 0.0
     except Exception:
-        # General safety fallback
         return 0.0
 @st.cache_data(show_spinner=False)
 def calculate_crs(vals):
-    """
-    SENSE-CRS (Cardiac Risk Score) Algorithm:
-    Multi-variate weighted fusion of metabolic, hematologic, and cardiac biomarkers.
-    
-    Enhancements: 
-    - RAM Caching for performance.
-    - Zero-division/Domain error handling for Log scales.
-    - Extended Telemetry for Physician Debugging.
-    """
     try:
-        # --- 1. NORMALIZATION LAYERS (Logic Untouched) ---
-        # We ensure inputs are treated as floats to prevent integer division errors
         v = [float(x) for x in vals]
         
         normalized_vectors = [
@@ -781,16 +733,10 @@ def calculate_crs(vals):
             v[4] / 0.5                       # Acute Cardiac Injury (Troponin)
         ]
         
-        # --- 2. INDEX SAFETY CLIPPING ---
-        # Ensures every vector stays within the [0, 1] clinical index range
         s = [np.clip(x, 0, 1) for x in normalized_vectors]
         
-        # --- 3. WEIGHTED MEDICAL FUSION (Logic Untouched) ---
-        # Weights: Glucose(30%), HB(25%), NT-proBNP(20%), Lp(a)(15%), Troponin(10%)
         final_score = (0.3 * s[0]) + (0.25 * s[1]) + (0.2 * s[2]) + (0.15 * s[3]) + (0.1 * s[4])
         
-        # --- 4. CLINICAL TELEMETRY LOGGING ---
-        # Enhanced logging for the Streamlit terminal (helpful for doctor verification)
         import logging
         logging.info(f"CRS Engine - PID: {st.session_state.get('active_pid', 'Unknown')}")
         logging.info(f"Indices: G:{s[0]:.3f} H:{s[1]:.3f} N:{s[2]:.3f} L:{s[3]:.3f} T:{s[4]:.3f}")
@@ -798,15 +744,11 @@ def calculate_crs(vals):
         return round(float(final_score), 5)
 
     except Exception as e:
-        # Critical Fallback: Return a neutral score if calculation fails
         st.error(f"SENSE-CRS Engine Error: {e}")
         return 0.0
-# --- 1. ENHANCED RISK STRATIFICATION ---
+
 def get_risk_label(score):
-    """
-    Returns high-fidelity clinical risk categorization.
-    Enhanced with 4-tier stratification for better triage granularity.
-    """
+
     if score >= 0.75: 
         return "CRITICAL ALERT", "#FF3131"  # High-intensity red
     if score >= 0.50: 
@@ -815,10 +757,8 @@ def get_risk_label(score):
         return "INCIPIENT", "#00D1FF"      # Warning/Early detection blue
     return "STABLE / OPTIMAL", "#00FF80"   # Healthy green
 
-# --- 2. NAVIGATION & COMMAND CENTER ---
 add_logo()
 
-# Custom CSS for Sidebar Polish
 st.sidebar.markdown("""
     <style>
     [data-testid="stSidebarNav"] {display: none;} /* Optional: Hides default nav to use your selectbox */
@@ -851,9 +791,8 @@ st.sidebar.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-st.sidebar.write("##") # Semantic spacing
+st.sidebar.write("##") 
 
-# Enhanced Selectbox with Icons
 page = st.sidebar.selectbox("🧭 OPERATIONAL VIEW", [
     "👤 Patient Registration", 
     "📁 Master Patient Directory", 
@@ -865,7 +804,6 @@ page = st.sidebar.selectbox("🧭 OPERATIONAL VIEW", [
 
 st.sidebar.write("---")
 
-# Sidebar Quick Stats with Glassmorphic Container
 c.execute("SELECT COUNT(*) FROM patients")
 total_p = c.fetchone()[0]
 
@@ -873,7 +811,6 @@ with st.sidebar.container():
     st.markdown('<div class="sidebar-stat-card">', unsafe_allow_html=True)
     st.metric("Total Registry", f"{total_p} Patients", delta=f"{total_p} Active", delta_color="normal")
     
-    # Logic Enhancement: Active user session info
     st.markdown(f"""
         <hr style="margin: 10px 0; border: 0.1px solid rgba(255,255,255,0.1);">
         <small style="color: #888;">AUTHORIZED ACCESS:</small><br>
@@ -881,9 +818,8 @@ with st.sidebar.container():
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- PAGE: REGISTRATION (MODERNIZED) ---
+# --- PAGE: REGISTRATION---
 if page == "👤 Patient Registration":
-    # 1. ENHANCED VISUAL STYLES
     st.markdown("""
         <style>
         .registration-header {
@@ -947,7 +883,6 @@ if page == "👤 Patient Registration":
         with st.form("reg_form", clear_on_submit=True):
             st.markdown("### 👤 Medical Identity Details")
             
-            # Input row for Name and Age
             sub_col1, sub_col2 = st.columns([2, 1])
             u_name = sub_col1.text_input("Full Legal Name", placeholder="e.g. John Doe")
             u_age = sub_col2.number_input("Age", min_value=1, max_value=120, value=30)
@@ -970,14 +905,12 @@ if page == "👤 Patient Registration":
                     new_id = f"SENSE-{uuid.uuid4().hex[:6].upper()}"
                     join_date = datetime.now().strftime('%Y-%m-%d')
                     
-                    # Logic remains untouched as requested
                     c.execute("INSERT INTO patients (pid, name, phone, address, join_date, streak) VALUES (?,?,?,?,?,?)", 
                               (new_id, u_name, u_phone, u_address, join_date, 0))
                     conn.commit()
                     
                     speak(f"Registration successful for {u_name}. System ID generated.")
                     
-                    # Store data for the ID card display
                     st.session_state['last_reg'] = {
                         'name': u_name, 'id': new_id, 'date': join_date, 
                         'phone': u_phone, 'address': u_address
@@ -1009,11 +942,9 @@ if page == "👤 Patient Registration":
                 </div>
             """, unsafe_allow_html=True)
         else:
-            # Placeholder for before registration
             st.info("👈 Complete the form to generate the Digital Health Identity Card.")
             st.image("https://cdn-icons-png.flaticon.com/512/3063/3063176.png", width=250)
 
-    # Educational Illustration
     st.write("---")
     with st.expander("🔬 The Role of Longitudinal Health IDs"):
         col_ex1, col_ex2 = st.columns([1, 2])
@@ -1026,113 +957,101 @@ if page == "👤 Patient Registration":
                 subtle cardiac shifts that a standard one-time test would miss.
             """)
             
-# --- PAGE: MASTER PATIENT DIRECTORY ---
 elif page == "📁 Master Patient Directory":
-    st.markdown("""
-        <style>
-        .directory-header {
-            background: linear-gradient(90deg, #00D1FF, #005f73);
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2);
-        }
-        .patient-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #00D1FF;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        .patient-card:hover {
-            transform: scale(1.01);
-            background: rgba(0, 209, 255, 0.04);
-            border-color: #00D1FF;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .status-badge {
-            background: rgba(0, 255, 128, 0.1);
-            color: #00FF80;
-            padding: 2px 8px;
-            border-radius: 5px;
-            font-size: 0.7em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        </style>
-        <div class="directory-header">
-            <h1 style="margin:0; color: white; letter-spacing: -1px;">📋 Master Patient Directory</h1>
-            <p style="color: rgba(255,255,255,0.8); margin:0; font-weight: 300;">Unified Clinical Database & Registry Management</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # 🔍 Search Interface with Visual Grouping
-    search_col1, search_col2 = st.columns([3, 1])
-    with search_col1:
-        search_query = st.text_input("", placeholder="Search by Patient Name, ID, or Address...", label_visibility="collapsed")
-    with search_col2:
-        st.markdown(f'<div style="text-align: right; padding-top: 5px;"><small style="color:#888;">Live Search Active</small></div>', unsafe_allow_html=True)
-
-    # Database logic (Enhanced with tuple-based parameterization for safety)
-    if search_query:
-        query = "SELECT * FROM patients WHERE name LIKE ? OR pid LIKE ? OR address LIKE ?"
-        params = (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%')
-        df_p = pd.read_sql(query, conn, params=params)
-    else:
-        query = "SELECT * FROM patients ORDER BY join_date DESC"
-        df_p = pd.read_sql(query, conn)
-
-    if not df_p.empty:
-        st.markdown(f"**{len(df_p)}** Clinical Records Found")
-        
-        for i, row in df_p.iterrows():
-            # Identity and Metadata Row
-            st.markdown(f"""
-                <div class="patient-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <span class="status-badge">Registered</span>
-                            <div style="font-size: 1.3em; font-weight: 700; color: #E0E0E0; margin-top: 5px;">{row['name']}</div> 
-                            <small style="color: #00D1FF; font-family: monospace;">UID: {row['pid']}</small>
-                        </div>
-                        <div style="text-align: right;">
-                            <small style="color: #666;">ENROLLED ON</small><br>
-                            <span style="color: #AAA; font-size: 0.9em;">{row['join_date']}</span>
-                        </div>
-                    </div>
-                    <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                        <div style="color: #BBB; font-size: 0.9em;">
-                            <b style="color: #00D1FF;">📞 Contact:</b><br>{row['phone']}
-                        </div>
-                        <div style="color: #BBB; font-size: 0.9em;">
-                            <b style="color: #00D1FF;">📍 Residency:</b><br>{row['address']}
-                        </div>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            # Action Row
-            btn_col1, btn_col2, btn_col3 = st.columns([1, 1, 3])
-            with btn_col1:
-                if st.button(f"Analyze", key=f"view_{row['pid']}", use_container_width=True):
-                    st.info(f"Navigate to 'New Diagnostic Scan' for ID: {row['pid']}")
-            with btn_col2:
-                if st.button(f"Copy ID", key=f"copy_{row['pid']}", use_container_width=True):
-                    st.toast(f"ID {row['pid']} copied to system clipboard")
-            st.write("---")
-            
-    else:
         st.markdown("""
-            <div style="text-align: center; padding: 50px;">
-                <h3 style="color: #555;">🔍 No Patient Records Found</h3>
-                <p style="color: #444;">Try adjusting your search criteria or register a new patient.</p>
+            <style>
+            .directory-header {
+                background: linear-gradient(90deg, #004d40, #002424);
+                padding: 30px;
+                border-radius: 15px;
+                margin-bottom: 25px;
+                border-bottom: 3px solid #008080;
+            }
+            .patient-card {
+                background: #121417;
+                border: 1px solid #2d2f39;
+                border-left: 5px solid #008080;
+                border-radius: 12px;
+                padding: 25px;
+                margin-bottom: 15px;
+            }
+            .status-badge {
+                background: rgba(0, 128, 128, 0.2);
+                color: #4db6ac;
+                padding: 4px 12px;
+                border-radius: 6px;
+                font-size: 0.7em;
+                font-weight: 700;
+                text-transform: uppercase;
+            }
+            div.stButton > button {
+                background: linear-gradient(90deg, #008080, #004d40) !important;
+                color: white !important;
+                border: none !important;
+                padding: 10px 20px !important;
+                border-radius: 8px !important;
+                font-weight: 700 !important;
+            }
+            </style>
+            <div class="directory-header">
+                <h1 style="margin:0; color: #e0f2f1; letter-spacing: -1px;">📋 Master Patient Registry</h1>
+                <p style="color: #80cbc4; margin:0; opacity: 0.8;">Secure Institutional Health Record Repository</p>
             </div>
         """, unsafe_allow_html=True)
-# --- PAGE: NEW DIAGNOSTIC SCAN (SENSE AI PRO EDITION) ---
+
+        search_query = st.text_input("", placeholder="🔍 Search by Name, UID, or Address...", label_visibility="collapsed")
+
+        if search_query:
+            query = "SELECT * FROM patients WHERE name LIKE ? OR pid LIKE ? OR address LIKE ?"
+            params = (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%')
+            df_p = pd.read_sql(query, conn, params=params)
+        else:
+            query = "SELECT * FROM patients ORDER BY join_date DESC"
+            df_p = pd.read_sql(query, conn)
+
+        if not df_p.empty:
+            for i, row in df_p.iterrows():
+                st.markdown(f"""
+                    <div class="patient-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <span class="status-badge">Verified Entry</span>
+                                <div style="font-size: 1.6em; font-weight: 800; color: #f5f5f5; margin-top: 10px;">{row['name'].upper()}</div> 
+                                <code style="color: #4db6ac; background: none; font-size: 1.1em;">UID: {row['pid']}</code>
+                            </div>
+                            <div style="text-align: right;">
+                                <small style="color: #455a64; font-weight: 900;">ENTRY DATE</small><br>
+                                <span style="color: #90a4ae; font-family: monospace;">{row['join_date']}</span>
+                            </div>
+                        </div>
+                        <div style="
+                            margin-top: 20px; 
+                            display: grid; 
+                            grid-template-columns: 1fr 1fr; 
+                            gap: 30px; 
+                            border-top: 1px solid #2d2f39; 
+                            padding-top: 15px;
+                        ">
+                            <div>
+                                <small style="color: #546e7a; font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Secure Contact</small><br>
+                                <span style="color: #cfd8dc; font-size: 1.1em;">📞 {row['phone']}</span>
+                            </div>
+                            <div>
+                                <small style="color: #546e7a; font-weight: bold; text-transform: uppercase; font-size: 0.8em;">Verified Address</small><br>
+                                <span style="color: #cfd8dc; font-size: 1.1em;">📍 {row['address']}</span>
+                            </div>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                if st.button(f"OPEN CLINICAL DOSSIER: {row['pid']}", key=f"btn_{row['pid']}", use_container_width=True):
+                    st.session_state['active_id'] = row['pid']
+                    st.toast(f"Dossier {row['pid']} synchronized.")
+        else:
+            st.info("No records found in the clinical database.")
+
+# --- PAGE: NEW DIAGNOSTIC SCAN ---
 elif page == "🔬 New Diagnostic Scan":
-    # 1. Advanced Cyber-Medical CSS
     st.markdown("""
         <style>
         /* Holographic Scan Container */
@@ -1190,7 +1109,6 @@ elif page == "🔬 New Diagnostic Scan":
 
     st.markdown("<h1 style='letter-spacing:-1px;'>🔬 SENSE 5-Plex Diagnostic Engine</h1>", unsafe_allow_html=True)
     
-    # Input Deck
     input_col1, input_col2 = st.columns([1, 1])
     with input_col1:
         p_id = st.text_input("📋 Patient Access ID", placeholder="Enter SENSE-XXXX")
@@ -1206,7 +1124,6 @@ elif page == "🔬 New Diagnostic Scan":
             img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), 1)
             h, w, _ = img.shape
 
-            # --- [INTERNAL PROCESSING LOGIC: UNTOUCHED] ---
             img_blur = cv2.GaussianBlur(img, (5, 5), 0)
             hsv = cv2.cvtColor(img_blur, cv2.COLOR_BGR2HSV)
             biomarker_keys = ['glucose', 'hb', 'ntprobnp', 'lpa', 'troponin']
@@ -1231,9 +1148,7 @@ elif page == "🔬 New Diagnostic Scan":
             c.execute("INSERT INTO readings VALUES (?,?,?,?,?,?,?,?,?)", 
                       (p_id, p_name, vals[0], vals[1], vals[2], vals[3], vals[4], score, ts))
             conn.commit()
-            # --- [END OF UNTOUCHED LOGIC] ---
 
-            # UI Results
             st.success(f"✅ Telemetry Lock: Results synchronized for {p_name}")
             
             res_col1, res_col2 = st.columns([1.3, 1])
@@ -1244,7 +1159,6 @@ elif page == "🔬 New Diagnostic Scan":
                 st.markdown('</div>', unsafe_allow_html=True)
                 
             with res_col2:
-                # Gauge-style score header
                 st.markdown(f"""
                     <div style="text-align:center; padding:10px; border-radius:10px; background:rgba(255,255,255,0.05);">
                         <small style="color:#888;">COMPOSITE RISK SCORE</small>
@@ -1266,9 +1180,7 @@ elif page == "🔬 New Diagnostic Scan":
                         </div>
                     """, unsafe_allow_html=True)
 
-            # --- AMBULANCE 108 EMERGENCY HUD (IMPROVED UI) ---
             if score > 0.7 or vals[4] > 0.4:
-                # Same sound and logic as requested
                 alert_sound = '<audio autoplay><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mp3"></audio>'
                 st.markdown(alert_sound, unsafe_allow_html=True)
                 
@@ -1292,7 +1204,6 @@ elif page == "🔬 New Diagnostic Scan":
                 
                 speak(f"Emergency. Ambulance 108 dispatched for {p_name}. Life support protocols initiated.")
                 
-                # Coordination Visualization
                 st.subheader("🚑 Real-Time Interception Map")
                 fig = go.Figure(go.Scatter(x=[0, 1.2, 2], y=[0, 0.8, 2], mode='lines+markers+text', 
                                           text=["HOSPITAL", "AMB-108", "PATIENT"], 
@@ -1308,9 +1219,8 @@ elif page == "🔬 New Diagnostic Scan":
                 speak(f"High risk detected. Results shared with medical hub.")
         else:
             st.error("❌ Patient ID not found. Please register the patient first.")
-# --- PAGE: CLINICAL HISTORY & TRENDS (MODERNIZED) ---
+# --- PAGE: CLINICAL HISTORY & TRENDS ---
 elif page == "📉 Clinical History & Trends":
-    # Enhanced CSS for a Professional Medical UI
     st.markdown("""
         <style>
         .analytics-header {
@@ -1356,24 +1266,20 @@ elif page == "📉 Clinical History & Trends":
     with col_input:
         pid = st.text_input("🔍 Patient Access Protocol", placeholder="Enter PID (e.g., SENSE-A12B)")
     with col_status:
-        st.write("##") # Visual alignment
+        st.write("##")
         if pid:
             st.markdown('<div style="background:rgba(255,75,75,0.1); padding:10px; border-radius:10px; text-align:center;"><span class="pulse-icon">❤️</span> <b style="color:#FF4B4B;">MONITORING LIVE</b></div>', unsafe_allow_html=True)
 
     if pid:
-        # Your exact query logic (Untouched)
         df = pd.read_sql(f"SELECT * FROM readings WHERE pid='{pid}' ORDER BY timestamp ASC", conn)
         
         if not df.empty:
             df['timestamp'] = pd.to_datetime(df['timestamp'])
             
-            # --- FEATURE: CLINICAL DATA SUMMARY CARDS ---
             last_score = df['score'].iloc[-1]
-            # Safety check for delta
             prev_score = df['score'].iloc[-2] if len(df) > 1 else last_score
             delta = last_score - prev_score
 
-            # Enhanced Metric Display
             m1, m2, m3 = st.columns(3)
             with m1:
                 st.metric("Current CRS Index", f"{last_score:.3f}", delta=f"{delta:.3f}", delta_color="inverse")
@@ -1390,11 +1296,9 @@ elif page == "📉 Clinical History & Trends":
 
             st.write("##")
 
-            # --- YOUR PLOTLY TRENDS (Logic Untouched - Visuals Enhanced) ---
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             colors = ['#FFA500', '#FF4B4B', '#00D1FF', '#7000FF', '#00FF00']
             
-            # Trace mapping
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['glucose'], name="Glucose", 
                                      line=dict(color=colors[0], width=3), mode='lines+markers'), secondary_y=False)
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['ntprobnp'], name="NT-proBNP", 
@@ -1407,7 +1311,6 @@ elif page == "📉 Clinical History & Trends":
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['troponin'], name="Troponin", 
                                      line=dict(color=colors[4], dash='dash', width=2)), secondary_y=True)
 
-            # Shading logic (Untouched)
             fig.add_hrect(y0=0.7, y1=1.0, fillcolor="red", opacity=0.07, line_width=0, annotation_text="CRITICAL PATH", secondary_y=False)
             fig.add_hrect(y0=0.4, y1=0.7, fillcolor="yellow", opacity=0.07, line_width=0, annotation_text="ELEVATED RISK", secondary_y=False)
 
@@ -1424,7 +1327,6 @@ elif page == "📉 Clinical History & Trends":
             
             st.plotly_chart(fig, use_container_width=True)
 
-            # --- SENSE-CRS RISK PROGRESSION AREA ---
             st.write("##")
             st.subheader("🛡️ Risk Velocity Progression")
             
@@ -1444,7 +1346,6 @@ elif page == "📉 Clinical History & Trends":
             )
             st.plotly_chart(fig_area, use_container_width=True)
 
-            # --- CLINICAL LOGS & OBSERVATIONS ---
             col_logs, col_obs = st.columns([1.5, 1])
             
             with col_logs:
@@ -1517,18 +1418,15 @@ elif page == "💊 Personalized Care Plan":
 
     st.markdown("<h1 style='letter-spacing:-1px;'>🥗 AI-Driven Care Strategy</h1>", unsafe_allow_html=True)
     
-    # Sleek Search Bar
     search_col1, _ = st.columns([2, 1])
     pid = search_col1.text_input("🔍 Access Patient Strategy Hub", placeholder="Enter Patient ID (e.g. SENSE-001)")
 
     if pid:
-        # Original Logic: Fetch last reading
         df_l = pd.read_sql(f"SELECT * FROM readings WHERE pid='{pid}' ORDER BY timestamp DESC LIMIT 1", conn)
         
         if not df_l.empty:
             data = df_l.iloc[0]
             
-            # --- HEALTH AURA HEADER ---
             aura_color = "#FF4B4B" if data['score'] > 0.7 else "#FFA500" if data['score'] > 0.4 else "#00FF00"
             status_text = '🔴 CRITICAL INTERVENTION' if data['score'] > 0.7 else '🟢 MAINTENANCE MODE'
             
@@ -1547,7 +1445,6 @@ elif page == "💊 Personalized Care Plan":
                 </div>
             """, unsafe_allow_html=True)
 
-            # --- VISUALIZATION: BIOMARKER RADAR ---
             categories = ['Glucose', 'Hemoglobin', 'NT-proBNP', 'Lp(a)', 'Troponin']
             radar_vals = [
                 min(data['glucose']/200, 1), 
@@ -1578,7 +1475,6 @@ elif page == "💊 Personalized Care Plan":
             with col_metrics:
                 st.markdown("### AI Diagnostic Insights")
                 
-                # Custom box for Bio-Age
                 bio_age = round(data['score']*10 + 40, 1)
                 st.markdown(f"""
                     <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; border-top:3px solid #00D1FF;">
@@ -1594,7 +1490,6 @@ elif page == "💊 Personalized Care Plan":
 
             st.write("---")
 
-            # --- ACTIONABLE STRATEGY CARDS ---
             c1, c2, c3 = st.columns(3)
 
             with c1:
@@ -1645,12 +1540,10 @@ elif page == "💊 Personalized Care Plan":
                     st.write("Cardiac markers indicate low systemic strain.")
                 st.markdown('</div>', unsafe_allow_html=True)
 
-            # --- LIFESTYLE MATRIX (EDITABLE) ---
             st.write("##")
             with st.expander("🛠️ Clinical Lifestyle Prescription Editor", expanded=True):
                 plan_db = pd.read_sql(f"SELECT * FROM care_plans WHERE pid='{pid}'", conn)
                 
-                # Your exact default logic
                 d_nut = "Foods: Walnuts, Greens. Restrict: Sugars."
                 d_act = f"Goal: {10000 if data['score'] < 0.4 else 5000} steps per day."
                 d_sup = "Focus: Hydration & Targeted Multivitamins."
@@ -1665,14 +1558,12 @@ elif page == "💊 Personalized Care Plan":
                     with t3: new_sup = st.text_area("Supplement Protocol", value=d_sup, height=100)
                     
                     if st.form_submit_button("💾 SYNCHRONIZE CARE PLAN", use_container_width=True):
-                        # Original INSERT logic (Untouched)
                         c.execute("INSERT OR REPLACE INTO care_plans VALUES (?,?,?,?,?)", 
                                  (pid, new_nut, new_act, new_sup, datetime.now()))
                         conn.commit()
                         st.toast("Clinical Plan Updated Successfully!")
                         st.rerun()
 
-            # --- PDF GENERATION ---
             try:
                 report_bytes = create_pdf_report(data, d_nut, d_act, d_sup)
                 st.download_button(
@@ -1691,7 +1582,6 @@ elif page == "💊 Personalized Care Plan":
             
 # --- PAGE: DOCTOR'S TRIAGE DASHBOARD (COMMAND CENTER) ---
 elif page == "🚨 Doctor's Triage Dashboard":
-    # Advanced Tactical UI Styling
     st.markdown("""
         <style>
         .triage-card {
@@ -1731,7 +1621,6 @@ elif page == "🚨 Doctor's Triage Dashboard":
 
     st.markdown("<h1 style='letter-spacing:-1.5px;'>👨‍⚕️ SENSE Triage Command</h1>", unsafe_allow_html=True)
     
-    # --- TOP LEVEL ANALYTICS (Command Bar) ---
     df_all = pd.read_sql("SELECT * FROM readings WHERE score > 0.4 ORDER BY timestamp DESC", conn)
     
     m1, m2, m3, m4 = st.columns([1, 1, 1, 1])
@@ -1754,10 +1643,8 @@ elif page == "🚨 Doctor's Triage Dashboard":
 
     st.write("---")
 
-    # --- GEOSPATIAL TRIAGE ---
     st.subheader("📍 Real-Time Incident Mapping")
     if not df_all.empty:
-        # Maintaining your random-simulated coordinate logic
         fig_map = go.Figure(go.Scatter(
             x=np.random.randn(len(df_all)), 
             y=np.random.randn(len(df_all)),
@@ -1781,7 +1668,6 @@ elif page == "🚨 Doctor's Triage Dashboard":
         )
         st.plotly_chart(fig_map, use_container_width=True)
 
-    # --- TRIAGE QUEUE ---
     st.subheader("📋 Active Incident Queue")
     
     if not df_all.empty:
@@ -1791,7 +1677,6 @@ elif page == "🚨 Doctor's Triage Dashboard":
             color = "#ff4b4b" if is_critical else "#ffa500"
             bg_class = "critical-pulse" if is_critical else ""
             
-            # Interactive Card UI
             st.markdown(f'''
                 <div class="triage-card {bg_class}" style="border-left-color: {color};">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1817,7 +1702,6 @@ elif page == "🚨 Doctor's Triage Dashboard":
                 </div>
             ''', unsafe_allow_html=True)
 
-            # High-Impact Action Grid
             c1, c2, c3, c4 = st.columns([1.5, 1, 1, 1])
             with c1:
                 if st.button(f"🚑 DISPATCH 108", key=f"disp_{i}", use_container_width=True):
@@ -1841,6 +1725,7 @@ elif page == "🚨 Doctor's Triage Dashboard":
                 <p>No high-risk biomarkers detected in the global registry.</p>
             </div>
         """, unsafe_allow_html=True)
+        
 # --- FOOTER: SECURE COMMAND TERMINAL ---
 
 st.markdown("---")
