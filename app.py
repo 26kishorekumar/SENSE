@@ -687,11 +687,11 @@ if st.sidebar.button("🚪 TERMINATE SESSION", use_container_width=True):
 
 # Clinical Reference Ranges (Architectural Constants - Do Not Modify)
 THRESHOLDS = {
-    'glucose':  {'normal': 100, 'high': 200, 'label': 'Blood Glucose', 'unit': 'mg/dL'},
-    'hb':       {'normal': 14,  'high': 8,   'label': 'Hemoglobin', 'unit': 'g/dL'},
-    'ntprobnp': {'normal': 100, 'high': 500, 'label': 'NT-proBNP', 'unit': 'pg/mL'},
-    'lpa':      {'normal': 20,  'high': 100, 'label': 'Lp(a)', 'unit': 'mg/dL'},
-    'troponin': {'normal': 0.01, 'high': 0.5, 'label': 'Troponin I', 'unit': 'ng/mL'}
+    'glucose':  {'normal': 100,  'high': 140,  'label': 'Blood Glucose', 'unit': 'mg/dL'},  # Abnormal > 140
+    'hb':       {'normal': 14,   'high': 12,   'label': 'Hemoglobin',    'unit': 'g/dL'},   # Abnormal < 12
+    'ntprobnp': {'normal': 100,  'high': 125,  'label': 'NT-proBNP',     'unit': 'pg/mL'},  # Abnormal > 125
+    'lpa':      {'normal': 20,   'high': 50,   'label': 'Lp(a)',         'unit': 'mg/dL'},  # High Risk > 50
+    'troponin': {'normal': 0.01, 'high': 0.04, 'label': 'Troponin I',    'unit': 'ng/mL'}   # Abnormal > 0.04
 }
 
 def color_to_value(hsv_mean: list, biomarker: str) -> float:
@@ -1180,7 +1180,7 @@ elif page == "🔬 New Diagnostic Scan":
                         </div>
                     """, unsafe_allow_html=True)
 
-            if score > 0.7 or vals[4] > 0.4:
+            if score > 0.7 or vals[4] > 0.04:
                 alert_sound = '<audio autoplay><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mp3"></audio>'
                 st.markdown(alert_sound, unsafe_allow_html=True)
                 
@@ -1447,11 +1447,11 @@ elif page == "💊 Personalized Care Plan":
 
             categories = ['Glucose', 'Hemoglobin', 'NT-proBNP', 'Lp(a)', 'Troponin']
             radar_vals = [
-                min(data['glucose']/200, 1), 
-                min(data['hb']/18, 1), 
-                min(data['ntprobnp']/1, 1), 
-                min(data['lpa']/1, 1), 
-                min(data['troponin']/1, 1)
+                min(data['glucose']/140, 1),  
+                min(data['hb']/14, 1),      
+                min(data['ntprobnp']/125, 1),  
+                min(data['lpa']/50, 1),        
+                min(data['troponin']/0.04, 1) 
             ]
 
             col_radar, col_metrics = st.columns([1.3, 1])
