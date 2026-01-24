@@ -383,20 +383,33 @@ def create_pdf_report(data, nutrition, activity, supplements):
     pdf.ln()
 
     # Data Rows
+# Optimized Data Rows for Clinical Accuracy
     pdf.set_font("Helvetica", '', 10)
     for key in ['glucose', 'hb', 'ntprobnp', 'lpa', 'troponin']:
         val = data[key]
         ref = THRESHOLDS[key]
         
-        is_alert = val < 12 if key == 'hb' else val > ref['high']
+        # 1. ALERT LOGIC: Hb is abnormal if BELOW threshold, others if ABOVE
+        is_alert = val < ref['high'] if key == 'hb' else val > ref['high']
         status_text = "ACTION REQUIRED" if is_alert else "OPTIMAL"
         
+        # 2. DYNAMIC REFERENCE SYMBOL: > for Hb floor, < for others' ceiling
+        ref_symbol = ">" if key == 'hb' else "<"
+
         pdf.cell(w[0], 10, f" {ref['label']}", 1)
+
         pdf.cell(w[1], 10, f" {val:.2f} {ref['unit']}", 1, 0, 'C')
-        pdf.cell(w[2], 10, f" < {ref['high']} {ref['unit']}", 1, 0, 'C')
+
+        pdf.cell(w[2], 10, f" {ref_symbol} {ref['high']} {ref['unit']}", 1, 0, 'C')
         
-        if is_alert: pdf.set_text_color(180, 0, 0)
+        # Status with Conditional Coloring
+        if is_alert: 
+            pdf.set_text_color(180, 0, 0) # Clinical Red
+        else:
+            pdf.set_text_color(0, 100, 0) # Success Green
+            
         pdf.cell(w[3], 10, status_text, 1, 1, 'C')
+        
         pdf.set_text_color(0, 0, 0)
 
     # --- CARE STRATEGY---
@@ -726,11 +739,11 @@ def calculate_crs(vals):
         v = [float(x) for x in vals]
         
         normalized_vectors = [
-            (v[0] - 70) / 150,               # Glucose Stress
-            (14 - v[1]) / 6,                 # Anemic Stress
-            math.log(max(v[2], 0) + 1) / 6,  # Heart Failure Indicator (Safety max added)
-            v[3] / 100,                      # Lipid Burden
-            v[4] / 0.5                       # Acute Cardiac Injury (Troponin)
+            (v[0] - 70) / 150,               # Glucose
+            (14 - v[1]) / 6,                 # Hemoglobin
+            math.log(max(v[2], 0) + 1) / 6,  # NT-proBNP
+            v[3] / 50,                       # Lp(a)
+            v[4] / 0.04                      # Troponin
         ]
         
         s = [np.clip(x, 0, 1) for x in normalized_vectors]
@@ -1447,10 +1460,10 @@ elif page == "💊 Personalized Care Plan":
 
             categories = ['Glucose', 'Hemoglobin', 'NT-proBNP', 'Lp(a)', 'Troponin']
             radar_vals = [
-                min(data['glucose']/140, 1),  
-                min(data['hb']/14, 1),      
-                min(data['ntprobnp']/125, 1),  
-                min(data['lpa']/50, 1),        
+                min(data['glucose']/140, 1), 
+                min(data['hb']/14, 1), 
+                min(data['ntprobnp']/125, 1),
+                min(data['lpa']/50, 1),       
                 min(data['troponin']/0.04, 1) 
             ]
 
