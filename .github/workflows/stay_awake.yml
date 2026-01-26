@@ -2,11 +2,13 @@ name: Streamlit Anti-Sleep
 on:
   schedule:
     - cron: '0 */6 * * *'  # Runs every 6 hours
-  workflow_dispatch:       # Allows you to click "Run workflow" manually
+  workflow_dispatch:
 
 jobs:
   wake-up-job:
     runs-on: ubuntu-latest
+    permissions: # This gives the action permission to "commit"
+      contents: write 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -16,7 +18,7 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install Selenium and Chrome
+      - name: Install dependencies
         run: |
           pip install selenium
           sudo apt-get update
@@ -24,3 +26,13 @@ jobs:
 
       - name: Run wake-up script
         run: python wake_up.py
+
+      # --- THIS IS THE NEW PART TO FIX THE 60-DAY LIMIT ---
+      - name: Keep Workflow Active
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          date > last_run.txt
+          git add last_run.txt
+          git commit -m "Keep-alive: $(date)" || echo "No changes to commit"
+          git push
