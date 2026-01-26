@@ -13,3 +13,6 @@ opencv-python-headless
 # AUDIO & PDF GENERATION
 gTTS
 fpdf
+
+# AUTOMATION (For the Wake-Up Script)
+selenium

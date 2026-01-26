@@ -1,0 +1,26 @@
+name: Streamlit Anti-Sleep
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Runs every 6 hours
+  workflow_dispatch:       # Allows you to click "Run workflow" manually
+
+jobs:
+  wake-up-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Selenium and Chrome
+        run: |
+          pip install selenium
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Run wake-up script
+        run: python wake_up.py
