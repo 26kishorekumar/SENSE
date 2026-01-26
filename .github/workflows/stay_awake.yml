@@ -7,7 +7,7 @@ on:
 jobs:
   wake-up-job:
     runs-on: ubuntu-latest
-    permissions: # This gives the action permission to "commit"
+    permissions:
       contents: write 
     steps:
       - name: Checkout code
@@ -27,7 +27,7 @@ jobs:
       - name: Run wake-up script
         run: python wake_up.py
 
-      # --- THIS IS THE NEW PART TO FIX THE 60-DAY LIMIT ---
+ 
       - name: Keep Workflow Active
         run: |
           git config --global user.name "GitHub Action"
