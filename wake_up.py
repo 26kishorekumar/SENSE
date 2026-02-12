@@ -1,13 +1,12 @@
 import requests
+import time
 
 URL = "https://sense-ai.streamlit.app/"
 
-def wake_streamlit():
+for i in range(2):
     try:
-        response = requests.get(URL, timeout=20)
-        print(f"Pinged {URL} | Status: {response.status_code}")
+        r = requests.get(URL, timeout=10)
+        print(f"Ping {i+1} status:", r.status_code)
     except Exception as e:
-        print(f"Error pinging app: {e}")
-
-if __name__ == "__main__":
-    wake_streamlit()
+        print(f"Ping {i+1} failed:", e)
+    time.sleep(5)
