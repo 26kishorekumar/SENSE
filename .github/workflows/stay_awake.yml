@@ -2,8 +2,8 @@ name: Streamlit Keep Alive
 
 on:
   schedule:
-    - cron: "*/2 * * * *"      # keep-alive ping
-    - cron: "0 0 * * *"        # dummy commit daily at 00:00 UTC
+    - cron: "*/2 * * * *"      # ping every 2 minutes
+    - cron: "0 0 * * *"        # daily dummy commit
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,15 @@ jobs:
           python-version: "3.9"
 
       - run: pip install requests
-      - run: python wake_up.py
+
+      - name: Ping Streamlit app
+        run: |
+          URL="https://sense-ai.streamlit.app/?ping=true"
+          for i in {1..2}; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+            echo "Ping $i status: $status"
+            sleep 5
+          done
 
   daily-commit:
     if: github.event.schedule == '0 0 * * *'
