@@ -1,38 +1,24 @@
-name: Streamlit Anti-Sleep
+name: Streamlit Keep Alive
+
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Runs every 6 hours
+    - cron: "0 */6 * * *"   # every 6 hours
   workflow_dispatch:
 
 jobs:
-  wake-up-job:
+  ping:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install dependencies
-        run: |
-          pip install selenium
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+        run: pip install requests
 
-      - name: Run wake-up script
+      - name: Ping Streamlit app
         run: python wake_up.py
-
- 
-      - name: Keep Workflow Active
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          date > last_run.txt
-          git add last_run.txt
-          git commit -m "Keep-alive: $(date)" || echo "No changes to commit"
-          git push
