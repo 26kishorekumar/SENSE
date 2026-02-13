@@ -2,22 +2,27 @@ name: Streamlit Keep Alive
 
 on:
   schedule:
-    - cron: "*/2 * * * *"      # ping every 2 minutes
-    - cron: "0 0 * * *"        # daily dummy commit
-  workflow_dispatch:
+    - cron: "*/2 * * * *"      # run every 2 minutes
+  workflow_dispatch:           # allows manual trigger
 
 jobs:
-  ping:
+  ping-and-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to push commits
     steps:
+      # Checkout the repo
       - uses: actions/checkout@v3
 
+      # Setup Python
       - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
+      # Install requests
       - run: pip install requests
 
+      # Ping Streamlit app
       - name: Ping Streamlit app
         run: |
           URL="https://sense-ai.streamlit.app/?ping=true"
@@ -27,22 +32,16 @@ jobs:
             sleep 5
           done
 
-  daily-commit:
-    if: github.event.schedule == '0 0 * * *'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Update timestamp
+      # Update timestamp file for commit
+      - name: Update keep-alive timestamp
         run: |
           echo "Last active: $(date)" > keep_alive.txt
 
-      - name: Commit changes
+      # Commit and push changes
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add keep_alive.txt
-          git commit -m "Daily keep-alive commit $(date)" || echo "No changes"
+          git commit -m "Keep-alive commit $(date)" || echo "No changes"
           git push
