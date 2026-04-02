@@ -742,7 +742,7 @@ def calculate_crs(vals):
             (v[0] - 70) / 150,               # Glucose
             (14 - v[1]) / 6,                 # Hemoglobin
             math.log(max(v[2], 0) + 1) / 6,  # NT-proBNP
-            v[3] / 50,                       # Lp(a)
+            v[3] / 200,                      # Total Serum Cholesterol
             v[4] / 0.04                      # Troponin
         ]
         
