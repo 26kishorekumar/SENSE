@@ -703,7 +703,7 @@ THRESHOLDS = {
     'glucose':  {'normal': 100,  'high': 140,  'label': 'Blood Glucose', 'unit': 'mg/dL'},  # Abnormal > 140
     'hb':       {'normal': 14,   'high': 12,   'label': 'Hemoglobin',    'unit': 'g/dL'},   # Abnormal < 12
     'ntprobnp': {'normal': 100,  'high': 125,  'label': 'NT-proBNP',     'unit': 'pg/mL'},  # Abnormal > 125
-    'lpa':      {'normal': 20,   'high': 50,   'label': 'Lp(a)',         'unit': 'mg/dL'},  # High Risk > 50
+    'lpa':      {'normal': 190,  'high': 200,  'label': 'Total Serum Cholesterol',  'unit': 'mg/dL'},  # High Risk > 200
     'troponin': {'normal': 0.01, 'high': 0.04, 'label': 'Troponin I',    'unit': 'ng/mL'}   # Abnormal > 0.04
 }
 
@@ -742,7 +742,7 @@ def calculate_crs(vals):
             (v[0] - 70) / 150,               # Glucose
             (14 - v[1]) / 6,                 # Hemoglobin
             math.log(max(v[2], 0) + 1) / 6,  # NT-proBNP
-            v[3] / 50,                       # Lp(a)
+            v[3] / 200,                      # Total Serum Cholesterol
             v[4] / 0.04                      # Troponin
         ]
         
